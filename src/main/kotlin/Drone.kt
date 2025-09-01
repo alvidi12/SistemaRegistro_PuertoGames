@@ -1,25 +1,37 @@
-class Drone(patente: String, peso: Double) :
-    TransporteCarga(patente, peso) {
+class Drone : TransporteCarga() {
+    private var patente: String = ""
+    private var peso: Int = 0
 
-    override fun calcularCostoEnvio(): Double {
-        return (peso * 0.8)
+    init {
+        capacidad = 20  // capacidad fija del Drone
     }
 
-    companion object {
-        fun crear(): Result<Drone> {
-            return try {
-                println("Ingrese el código del Drone:")
-                val patente = readLine() ?: ""
+    override fun ingresarDatos() {
+        try {
+            println("Ingrese patente o etiqueta del Drone:")
+            patente = readLine() ?: ""
 
-                println("Ingrese el peso de la carga:")
-                val peso = readLine()?.toDoubleOrNull() ?: throw Exception("Peso inválido")
+            println("Ingrese el peso de la carga (Kg):")
+            val entrada = readLine()
+            peso = entrada?.toInt() ?: 0
+        } catch (e: Exception) {
+            println("Error al ingreso de datos: ${e.message}")
+        }
+    }
 
-                if (patente.isBlank()) return Result.failure(Exception("No puede estar vacía"))
+    override fun calcularCostoEnvio(): Int {
+        return (peso * 2) + 200
+    }
 
-                Result.success(Drone(patente, peso))
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
+    override fun mostrarInfo() {
+        println("Drone registrado:\nPatente: $patente, Peso: $peso kg, Capacidad: $capacidad kg")
+        println("Costo de envío: $${calcularCostoEnvio()}")
+
+        val sobrepeso = peso - capacidad
+        if (sobrepeso > 0) {
+            val costoExtra = sobrepeso * 2 // multa
+            println("⚠️ Sobrepeso: (+$sobrepeso kg). Costo extra: $$costoExtra")
+            println("Costo total: $${calcularCostoEnvio() + costoExtra}")
         }
     }
 }

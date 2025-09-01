@@ -2,37 +2,27 @@ fun main() {
     val listaTransportes = mutableListOf<TransporteCarga>()
 
     repeat(2) {
-        println("Registro de vehículo ${it + 1}")
-        println("Seleccione tipo de transporte: (1) Camión (2) Camioneta (3) Drone")
-        when (readLine()) {
-            "1" -> Camion.crear()
-                .onSuccess {
-                    println("Camión registrado")
-                    it.mostrarInfo()
-                    listaTransportes.add(it)
-                }
-                .onFailure { println("Error: ${it.message}") }
+        println("Registro de vehículo: ${it + 1}")
+        println("Seleccione tipo de transporte:\n(1) Camión \n(2) Camioneta \n(3) Drone")
 
-            "2" -> Camioneta.crear()
-                .onSuccess {
-                    println("Camioneta registrada")
-                    it.mostrarInfo()
-                    listaTransportes.add(it)
-                }
-                .onFailure { println("Error: ${it.message}") }
+        val transporte: TransporteCarga? = when (readLine()) {
+            "1" -> Camion()
+            "2" -> Camioneta()
+            "3" -> Drone()
+            else -> {
+                println("Opción inválida")
+                null
+            }
+        }
 
-            "3" -> Drone.crear()
-                .onSuccess {
-                    println("Drone registrado")
-                    it.mostrarInfo()
-                    listaTransportes.add(it)
-                }
-                .onFailure { println("Error: ${it.message}") }
-
-            else -> println("Opción inválida")
+        transporte?.let {
+            it.ingresarDatos()
+            println("Vehículo registrado")
+            it.mostrarInfo()
+            listaTransportes.add(it)
         }
     }
 
-    println("\nLista de vehículos registrados")
+    println("Lista final de vehículos registrados")
     listaTransportes.forEach { it.mostrarInfo() }
 }
